@@ -4,17 +4,17 @@
   "description": "OISP IoT agent for devices",
   "main": "server.js",
   "dependencies": {
+    "@open-iot-service-platform-test/oisp-sdk-js-mqtt-test": "^1.0.0beta1",
     "cli-table": "^0.3.0",
-    "commander": "^2.11.0",
+    "commander": "^2.17.1",
     "es6-shim": "0.34.1",
     "express": "^3.5.2",
     "getmac": "^1.0.6",
     "json-schema": "^0.2.2",
     "json-socket": "^0.1.2",
-    "mqtt": "^0.3.8",
+    "mqtt": "^2.18.3",
     "uuid": "^3.0.0",
-    "winston": "^2.4.0",
-    "@open-iot-service-platform/oisp-sdk-js": "^1.0.0beta1"
+    "winston": "^2.4.0"
   },
   "bin": {
     "oisp-admin": "./oisp-admin.js",
