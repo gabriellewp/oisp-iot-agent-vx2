@@ -19,7 +19,7 @@ to a UDP socket on port 41234. The agent will add the security token, add a time
 ``` bash
 git clone https://github.com/Open-IoT-Service-Platform/oisp-iot-agent.git
 cd oisp-iot-agent
-npm install
+
 ```
 
 #### Configuration
