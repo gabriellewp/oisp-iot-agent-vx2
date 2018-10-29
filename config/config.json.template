@@ -61,7 +61,9 @@
                 "health_status": "device/{deviceid}/health",
                 "cmpcatalog": "server/devices/{deviceid}/cmpcatalog",
                 "cmpcatalog_status": "device/{deviceid}/cmpcatalog",
-                "control_command": "device/{gwid}/control"
+                "control_command": "device/{gwid}/control",
+                "storetoken": "server/devices/{deviceid}/storetoken",
+                "storetoken_status": "device/{deviceid}/storetoken"
             }
         }
 	}
