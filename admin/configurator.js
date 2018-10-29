@@ -24,7 +24,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 var logger = require('../lib/logger').init(),
     common = require('../lib/common'),
-    utils = require("../lib/utils").init();
+    utils = require("../lib/utils").init(),
+    /*author:Gabrielle Poerwawinata*/
+    Cloud = require("../lib/cloud.proxy"); 
+
 
 var configFileKey = {
     dataDirectory: 'data_directory',
@@ -75,6 +78,20 @@ var setDeviceName = function(name, cb) {
     cb(name);
 };
 
+/*author: Gabrielle Poerwawinata*/
+var sendTokentoGateway = function(cb) {
+    utils.getDeviceId(function (id) {
+        var cloud = Cloud.init(logger, id);
+        cloud.cacheToken(function (result) {
+            if (result) {
+                console.log("oisp token has been stored at gateway", result)
+            }
+            process.exit(0);
+        });
+    });
+};
+
+
 /*istanbul ignore next*/
 module.exports = {
     addCommand : function (program) {
@@ -84,6 +101,17 @@ module.exports = {
             .action(function(protocol) {
                 if (protocol == 'mqtt' || protocol === 'rest' || protocol === 'rest+ws') {
                     common.saveToConfig(configFileKey.defaultConnector, protocol);
+                    /*author: Gabrielle Poerwawinata*/
+                    //send also token from oisp to gateway 
+                    //as long as it hasnt doing health check, it stores token from oisp instead token from broker
+                    //publish oisp token to be stored at gateway
+                    var deviceConf = common.getDeviceConfig();
+                    console.log("device token in protocol:" , deviceConf['device_token']);
+                    if(protocol == 'mqtt'){
+                        // sendTokentoGateway(function(reply) {
+                        //     logger.info(reply);
+                        // });
+                    }
                     logger.info("protocol set to: " + protocol);
                 } else {
                     logger.error("invalid protocol: %s - please use 'rest' or 'rest+ws'", protocol);
