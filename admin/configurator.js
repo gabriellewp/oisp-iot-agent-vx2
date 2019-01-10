@@ -22,9 +22,12 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-var logger = require('../lib/logger').init(),
+var Cloud = require("../lib/cloud.proxy"),
+    logger = require('../lib/logger').init(),
     common = require('../lib/common'),
-    utils = require("../lib/utils").init();
+    utils = require("../lib/utils").init(),
+    conf = require('../config'),
+    proxyConnector = require('@open-iot-service-platform-test/oisp-sdk-js-mqtt-test')(conf).lib.proxies.getProxyConnector();
 
 var configFileKey = {
     dataDirectory: 'data_directory',
@@ -75,6 +78,21 @@ var setDeviceName = function(name, cb) {
     cb(name);
 };
 
+var sendTokentoGateway = function(cb) {
+    utils.getDeviceId(function (id) {
+        var cloud = Cloud.init(logger, id);
+        //proxyConnector.setCredential("admin", "password");
+        cloud.cacheToken(function (result) {
+            if (result) {
+                console.log("oisp token has been stored at gateway", result)
+                //common.saveToDeviceConfig("device_mqtt_auth", true); 
+            }
+            //cb(result);
+            process.exit(0);
+        });
+    });
+};
+
 /*istanbul ignore next*/
 module.exports = {
     addCommand : function (program) {
@@ -84,6 +102,12 @@ module.exports = {
             .action(function(protocol) {
                 if (protocol == 'mqtt' || protocol === 'rest' || protocol === 'rest+ws') {
                     common.saveToConfig(configFileKey.defaultConnector, protocol);
+
+                    var deviceConf = common.getDeviceConfig();
+                    console.log("device token in protocol:" , deviceConf['device_token']);
+                    if(protocol == 'mqtt'){
+                       // sendTokentoGateway();
+                    }
                     logger.info("protocol set to: " + protocol);
                 } else {
                     logger.error("invalid protocol: %s - please use 'rest' or 'rest+ws'", protocol);
